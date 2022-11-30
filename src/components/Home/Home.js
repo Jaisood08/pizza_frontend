@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Cake from "../Common/Cake";
+import Pizza from "../Common/Pizza";
 
 const ApiCakeList = () => {
   const [cakeList, setCakeList] = useState([]);
@@ -37,7 +37,7 @@ const ApiCakeList = () => {
         {cakeList.map((cakeIt) => {
           return (
             <div class="col">
-              <Cake key={cakeIt.cakeid} Cake={cakeIt} />
+              <Pizza key={cakeIt.cakeid} Pizza={cakeIt} />
             </div>
           );
         })}

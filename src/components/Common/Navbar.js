@@ -38,7 +38,7 @@ const Navbar = () => {
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <Link to="/">
+              <Link to="/orderpizza">
                 <div class="links">Order Pizza</div>
               </Link>
             </li>
@@ -73,11 +73,6 @@ const Navbar = () => {
                       <img src="shopping-cart.png" alt="cart" />
                       Shoping cart
                     </div>
-                  </button>
-                </Link>
-                <Link to="/orders">
-                  <button type="button" class="btn btn-info">
-                    Orders
                   </button>
                 </Link>
               </div>
