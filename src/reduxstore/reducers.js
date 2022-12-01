@@ -30,6 +30,12 @@ export default function jay(
       console.log(action, state);
       return state;
       break;
+    case "ADD_TO_CART":
+      state = { ...state };
+      state.cart = action.payload;
+      console.log(action, state);
+      return state;
+      break;
     case "FINAL_CART":
       state = { ...state };
       state.cart = action.payload;

@@ -1,0 +1,8 @@
+.fakeImage{
+    max-width: 250px;
+    max-height: 250px;
+    min-height: 200px;
+    min-width: 200px;
+    margin: auto;
+}
+

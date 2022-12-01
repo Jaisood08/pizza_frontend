@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import "./Pizza.css";
+import { Link, useNavigate } from "react-router-dom";
+import store from "../../reduxstore/store";
+import { useEffect, useState } from "react";
 
 const Pizza = (props) => {
   const {
@@ -13,8 +15,68 @@ const Pizza = (props) => {
     topping,
     type,
     id: cakeid,
+    _id,
   } = props.Pizza;
   var user = useSelector((state) => state.user);
+  var cart = useSelector((state) => state.cart);
+
+  const navigate = useNavigate();
+  const [quantity, setQuantity] = useState(0);
+
+  useEffect(() => {
+    UpdateCart();
+  }, []);
+
+  const UpdateCart = () => {
+    axios({
+      url: `${process.env.REACT_APP_API_URL}/api/pizza/showCart`,
+      method: "get",
+      headers: {
+        authorization: "Bearer " + user.token,
+      },
+    }).then(
+      (response) => {
+        console.log("UpdateCartresponse from api is ", response.data);
+        store.dispatch({
+          type: "ADD_TO_CART",
+          payload: response.data,
+        });
+
+        const findcart = response.data.data.find((P) => {
+          return P.pizza._id == _id;
+        });
+
+        if (findcart) {
+          setQuantity((Q) => findcart.quantity);
+        } else {
+          setQuantity((Q) => 0);
+        }
+      },
+      (error) => {
+        console.log("error from api is ", error);
+      }
+    );
+  };
+
+  const addtocart = (id) => {
+    axios({
+      url: `${process.env.REACT_APP_API_URL}/api/pizza/addToCart`,
+      method: "post",
+      headers: {
+        authorization: "Bearer " + user.token,
+      },
+      data: { pizzaId: id, quantity: quantity + 1 },
+    }).then(
+      (response) => {
+        console.log(response.data);
+        setQuantity((Q) => Q + 1);
+        UpdateCart();
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
 
   return (
     <div
@@ -41,15 +103,37 @@ const Pizza = (props) => {
           </div>
         </div>
         <div class="col-4" style={{ margin: "auto" }}>
-          <Link to={"/details/" + cakeid}>
-            <img
-              src={image}
-              style={{ maxHeight: "250px", maxHeight: "250px" }}
-            />
-          </Link>
-          <button type="button" class="btn btn-warning">
-            <div class="cartButton">Add to Cart</div>
-          </button>
+          <img src={image} style={{ maxHeight: "250px", maxHeight: "250px" }} />
+
+          {quantity == 0 ? (
+            <button
+              onClick={() => {
+                if (!user.token) {
+                  navigate("/login");
+                } else {
+                  addtocart(_id);
+                }
+              }}
+              type="button"
+              class="btn btn-warning"
+            >
+              <div class="cartButton">Add to Cart</div>{" "}
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                if (!user.token) {
+                  navigate("/login");
+                } else {
+                  navigate(`/buildurpizza?_id=${_id}`);
+                }
+              }}
+              type="button"
+              class="btn btn-warning"
+            >
+              <div class="cartButton">Customize this pizza</div>
+            </button>
+          )}
         </div>
       </div>
     </div>
